@@ -25,6 +25,7 @@ model Blog {
   content   String
   price     Float
   isFree    Boolean
+  genre     String
   authorId  String
   author    User       @relation(fields: [authorId], references: [id])
   payments  Payment[]  // Add back relation for payments
