@@ -1,0 +1,63 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id             String     @id @default(uuid())
+  username       String     @unique
+  email          String     @unique
+  password       String
+  blogs          Blog[]
+  payments       Payment[]  // Add back relation for payments
+  wallet         Wallet?
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+}
+
+model Blog {
+  id        String     @id @default(uuid())
+  title     String
+  content   String
+  price     Float
+  isFree    Boolean
+  authorId  String
+  author    User       @relation(fields: [authorId], references: [id])
+  payments  Payment[]  // Add back relation for payments
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
+model Payment {
+  id        String    @id @default(uuid())
+  amount    Float
+  blogId    String
+  blog      Blog      @relation(fields: [blogId], references: [id])
+  userId    String
+  user      User      @relation(fields: [userId], references: [id])
+  createdAt DateTime  @default(now())
+}
+
+model Wallet {
+  id          String       @id @default(uuid())
+  address     String
+  balance     Float        @default(0.0)
+  userId      String       @unique // Ensure userId is unique
+  user        User         @relation(fields: [userId], references: [id])
+  transactions Transaction[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+model Transaction {
+  id          String   @id @default(uuid())
+  amount      Float
+  status      String
+  walletId    String
+  wallet      Wallet   @relation(fields: [walletId], references: [id])
+  createdAt   DateTime @default(now())
+}
