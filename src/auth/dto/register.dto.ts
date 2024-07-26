@@ -15,4 +15,7 @@ export class RegisterUserDto {
     @ApiProperty()
     @IsEmail()
     email: string
+
+    @ApiProperty()
+    walletAddress?: string
 }

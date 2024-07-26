@@ -58,7 +58,16 @@ export class AuthService {
     }
 
     registerData.password = await bcrypt.hash(registerData.password, 10);
-    const res = await this.databaseService.user.create({ data: registerData });
+    
+    // Ensure the walletAddress is handled correctly
+    const res = await this.databaseService.user.create({ 
+      data: {
+        username: registerData.username,
+        email: registerData.email,
+        password: registerData.password,
+        walletAddress: registerData.walletAddress, // Add walletAddress here
+      }
+    });
 
     return {
       message: 'Registration successful.',
