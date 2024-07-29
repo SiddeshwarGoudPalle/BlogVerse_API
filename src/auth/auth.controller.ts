@@ -14,13 +14,13 @@ import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Post('register')
+  @Post('/Register')
   @ApiOperation({ description: 'Register a new user with email.', summary: 'Register a User.' })
   create(@Body() registerData: RegisterUserDto) {
     return this.authService.register(registerData);
   }
 
-  @Post('login')
+  @Post('/Login')
   @ApiOperation({ description: 'Login with email and password.', summary: 'Login a User.' })
   login(@Body() loginData: LoginDto) {
     return this.authService.login(loginData);

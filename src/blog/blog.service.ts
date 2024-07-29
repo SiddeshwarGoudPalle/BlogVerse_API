@@ -102,4 +102,19 @@ export class BlogService {
       include: { author: true },
     });
   }
+
+  async getBlogByUserEmail(userEmail: string): Promise<Blog[]> {
+    const user = await this.databaseService.user.findUnique({
+      where: { email: userEmail },
+    });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    return this.databaseService.blog.findMany({
+      where: { authorId: user.id },
+      include: { author: true },
+    });
+  }
 }

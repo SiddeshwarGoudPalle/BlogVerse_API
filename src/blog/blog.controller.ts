@@ -65,4 +65,12 @@ export class BlogController {
   async getBlogByGenre(@Query('genre') genre: string) {
     return this.blogService.getBlogByGenre(genre);
   }
+
+  @Get('search/user-email')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ description: 'Get blogs by user email.', summary: 'Get Blog by User Email.' })
+  async getBlogByUserEmail(@Query('userEmail') userEmail: string) {
+    return this.blogService.getBlogByUserEmail(userEmail);
+  }
 }
