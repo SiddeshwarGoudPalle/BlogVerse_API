@@ -1,4 +1,4 @@
-import { Controller, Post, Patch, Body, UseGuards } from '@nestjs/common';
+import { Controller, Post, Patch, Body, UseGuards, Get } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { RegisterUserDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
@@ -48,5 +48,14 @@ export class AuthController {
   @ApiOperation({ description: 'Update password.', summary: 'Update Password.' })
   updatePassword(@UserEmail() userEmail: string, @Body() updatePasswordDto: UpdatePasswordDto) {
     return this.authService.updatePassword(userEmail, updatePasswordDto);
+  }
+
+  // New endpoint for fetching user details
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @Get('details')
+  @ApiOperation({ description: 'Get details of the currently logged-in user.', summary: 'Get User Details.' })
+  getUserDetails(@UserEmail() userEmail: string) {
+    return this.authService.getUserDetails(userEmail);
   }
 }

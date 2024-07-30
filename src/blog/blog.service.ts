@@ -17,6 +17,7 @@ export class BlogService {
     }
 
     const isFree = createBlogDto.price === 0;
+    const capitalizedGenre = createBlogDto.genre.charAt(0).toUpperCase() + createBlogDto.genre.slice(1).toLowerCase();
 
     const blog = await this.databaseService.blog.create({
       data: {
@@ -24,7 +25,7 @@ export class BlogService {
         content: createBlogDto.content,
         price: createBlogDto.price,
         isFree: isFree,
-        genre: createBlogDto.genre,
+        genre: capitalizedGenre,
         authorId: user.id,
       },
     });
@@ -114,6 +115,22 @@ export class BlogService {
 
     return this.databaseService.blog.findMany({
       where: { authorId: user.id },
+      include: { author: true },
+    });
+  }
+
+  async getUniqueGenres() {
+    const genres = await this.databaseService.blog.findMany({
+      select: { genre: true },
+      distinct: ['genre'],
+    });
+
+    return genres.map((blog) => blog.genre);
+  }
+
+  async getBlogsSortedByPrice(order: 'asc' | 'desc'): Promise<Blog[]> {
+    return this.databaseService.blog.findMany({
+      orderBy: { price: order },
       include: { author: true },
     });
   }

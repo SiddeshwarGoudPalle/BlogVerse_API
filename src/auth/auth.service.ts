@@ -158,4 +158,26 @@ export class AuthService {
 
     return { message: 'Password updated successfully' };
   }
+
+  // New method for getting user details
+  async getUserDetails(userEmail: string) {
+    const user = await this.databaseService.user.findUnique({
+      where: { email: userEmail },
+      select: {
+        id: true,
+        username: true,
+        email: true,
+        walletAddress: true,
+      }
+    });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    return {
+      message: 'User details retrieved successfully.',
+      user,
+    };
+  }
 }

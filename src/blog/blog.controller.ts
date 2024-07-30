@@ -73,4 +73,20 @@ export class BlogController {
   async getBlogByUserEmail(@Query('userEmail') userEmail: string) {
     return this.blogService.getBlogByUserEmail(userEmail);
   }
+
+  @Get('unique-genres')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ description: 'Get all unique genres.', summary: 'Get Unique Genres.' })
+  async getUniqueGenres() {
+    return this.blogService.getUniqueGenres();
+  }
+
+  @Get('sorted-by-price')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ description: 'Get blogs sorted by price.', summary: 'Get Blogs Sorted by Price.' })
+  async getBlogsSortedByPrice(@Query('order') order: 'asc' | 'desc') {
+    return this.blogService.getBlogsSortedByPrice(order);
+  }
 }
