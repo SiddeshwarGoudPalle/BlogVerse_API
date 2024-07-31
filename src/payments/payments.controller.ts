@@ -1,8 +1,9 @@
-import { Controller, Post, Body, UseGuards, HttpCode, HttpStatus } from '@nestjs/common';
+// blog.controller.ts
+import { Controller, Post, Get, Body, Param, UseGuards, HttpCode, HttpStatus } from '@nestjs/common';
 import { PaymentsService } from './payments.service';
 import { PayToViewDto } from './dto/pay-to-view.dto';
 import { PaymentResponseDto } from './dto/payment-response.dto';
-import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiParam } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/auth.guard'; // Adjust the import path as needed
 
 @ApiTags('payments')
@@ -20,5 +21,15 @@ export class PaymentsController {
   @UseGuards(JwtAuthGuard) // Apply JWT authentication guard
   async payToView(@Body() paymentDto: PayToViewDto): Promise<PaymentResponseDto> {
     return this.paymentsService.payToView(paymentDto);
+  }
+
+  @Get('user/:userId')
+  @ApiOperation({ summary: 'Get all payments made by a user' })
+  @ApiResponse({ status: 200, description: 'Payments retrieved successfully.' })
+  @ApiResponse({ status: 404, description: 'User not found' })
+  @ApiParam({ name: 'userId', required: true, description: 'User ID to retrieve payments for' })
+  @UseGuards(JwtAuthGuard) // Apply JWT authentication guard
+  async getUserPayments(@Param('userId') userId: string) {
+    return this.paymentsService.getUserPayments(userId);
   }
 }

@@ -1,3 +1,4 @@
+// blog.service.ts
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { DatabaseService } from 'src/database/database.service'; // Adjust import path as needed
 import { PayToViewDto } from './dto/pay-to-view.dto';
@@ -40,16 +41,30 @@ export class PaymentsService {
     }
 
     // Check if the user has already paid for this blog
-    const existingPayment = await this.database.payment.findFirst({
-      where: {
-        userId: userId,
-        blogId: blogId,
-      },
-    });
+     if (blog.price > 0) {
+      const existingPurchase = await this.database.payment.findFirst({
+        where: {
+          userId: userId,
+          blogId: blogId,
+          type: 'purchase', // Ensure we're only looking for purchase records
+        },
+      });
 
-    if (existingPayment) {
+      if (existingPurchase) {
+        return {
+          message: 'You already have paid for this blog.',
+          access: {
+            blogId,
+            accessGranted: true,
+          },
+        };
+      }
+    }
+
+    // Check if the blog is free for everyone
+    if (blog.price === 0 && amount === 0) {
       return {
-        message: 'You already have access to this blog.',
+        message: 'This blog is free for everyone.',
         access: {
           blogId,
           accessGranted: true,
@@ -100,5 +115,46 @@ export class PaymentsService {
         accessGranted: true,
       },
     };
+  }
+
+  async getUserPayments(userId: string) {
+    // Check if the user exists
+    const user = await this.database.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    // Retrieve all payments made by the user
+    const payments = await this.database.payment.findMany({
+      where: { userId },
+      include: {
+        blog: {
+          select: {
+            id: true,
+            title: true,
+            price: true,
+            author: {
+              select: {
+                username: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    return payments.map((payment) => ({
+      id: payment.id,
+      amount: payment.amount,
+      type: payment.type,
+      blogTitle: payment.blog.title,
+      blogId: payment.blog.id,
+      blogPrice: payment.blog.price,
+      author: payment.blog.author.username,
+      createdAt: payment.createdAt,
+    }));
   }
 }
