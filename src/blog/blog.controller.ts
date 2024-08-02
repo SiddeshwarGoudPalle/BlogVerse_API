@@ -1,9 +1,10 @@
-import { Controller, Post, Get, Param, Query, Body, UseGuards } from '@nestjs/common';
+import { Controller, Post, Get, Param, Query, Body, UseGuards, BadRequestException } from '@nestjs/common';
 import { BlogService } from './blog.service';
 import { CreateBlogDto } from './dto/create-blog.dto';
 import { JwtAuthGuard } from '../auth/auth.guard';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { UserEmail } from 'src/common/decorators/user-email.decorator';
+import { Blog } from '@prisma/client';
 
 @ApiTags('Blog')
 @Controller('api/blogs')
@@ -74,19 +75,26 @@ export class BlogController {
     return this.blogService.getBlogByUserEmail(userEmail);
   }
 
-  @Get('unique-genres')
+  @Get('search/unique-genre')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  @ApiOperation({ description: 'Get all unique genres.', summary: 'Get Unique Genres.' })
-  async getUniqueGenres() {
-    return this.blogService.getUniqueGenres();
+  @ApiOperation({ description: 'Get all unique genres present in blogs.', summary: 'Get All Unique Genres.' })
+  async getAllUniqueGenres() {
+    return this.blogService.getAllUniqueGenres();
   }
 
-  @Get('sorted-by-price')
+  @Get('search/price/sort')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  @ApiOperation({ description: 'Get blogs sorted by price.', summary: 'Get Blogs Sorted by Price.' })
-  async getBlogsSortedByPrice(@Query('order') order: 'asc' | 'desc') {
-    return this.blogService.getBlogsSortedByPrice(order);
+  @ApiOperation({ description: 'Sort blogs by price (low to high or high to low).', summary: 'Sort Blogs by Price.' })
+  async getBlogsSortedByPrice(@Query('sort') sort: 'asc' | 'desc' = 'asc') {
+    if (sort !== 'asc' && sort !== 'desc') {
+      throw new BadRequestException('Invalid sort parameter. Valid values are "asc" and "desc".');
+    }
+    return this.blogService.getBlogsSortedByPrice(sort);
   }
+
 }
+
+
+

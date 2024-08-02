@@ -46,7 +46,7 @@ export class PaymentsService {
         where: {
           userId: userId,
           blogId: blogId,
-          type: 'purchase', // Ensure we're only looking for purchase records
+          type: 'paid', // Ensure we're only looking for purchase records
         },
       });
 
