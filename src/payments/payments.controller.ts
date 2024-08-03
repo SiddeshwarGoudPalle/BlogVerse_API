@@ -19,7 +19,7 @@ import {
   ApiBearerAuth,
   ApiParam,
 } from '@nestjs/swagger';
-import { JwtAuthGuard } from 'src/auth/auth.guard'; // Adjust the import path as needed
+import { JwtAuthGuard } from '../auth/auth.guard'; // Adjust the import path as needed
 
 @ApiTags('payments')
 @ApiBearerAuth() // Indicates that the endpoint requires authentication

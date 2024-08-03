@@ -12,7 +12,7 @@ import { BlogService } from './blog.service';
 import { CreateBlogDto } from './dto/create-blog.dto';
 import { JwtAuthGuard } from '../auth/auth.guard';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { UserEmail } from 'src/common/decorators/user-email.decorator';
+import { UserEmail } from '../common/decorators/user-email.decorator';
 
 @ApiTags('Blog')
 @Controller('api/blogs')
