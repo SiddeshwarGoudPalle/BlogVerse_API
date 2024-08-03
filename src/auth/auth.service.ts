@@ -1,4 +1,8 @@
-import { Injectable, ConflictException, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  ConflictException,
+  NotFoundException,
+} from '@nestjs/common';
 import { RegisterUserDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { UpdateEmailDto } from './dto/update-email.dto';
@@ -12,13 +16,13 @@ import { JwtService } from '@nestjs/jwt';
 export class AuthService {
   constructor(
     private readonly databaseService: DatabaseService,
-    private readonly jwtService: JwtService
+    private readonly jwtService: JwtService,
   ) {}
 
   async login(loginData: LoginDto) {
     const { email, password } = loginData;
     const user = await this.databaseService.user.findUnique({
-      where: { email }
+      where: { email },
     });
 
     if (!user) {
@@ -35,14 +39,14 @@ export class AuthService {
       user: {
         id: user.id,
         username: user.username,
-        email: user.email
-      }
+        email: user.email,
+      },
     };
   }
 
   async register(registerData: RegisterUserDto) {
     const user = await this.databaseService.user.findUnique({
-      where: { email: registerData.email }
+      where: { email: registerData.email },
     });
 
     if (user) {
@@ -50,7 +54,7 @@ export class AuthService {
     }
 
     const name = await this.databaseService.user.findUnique({
-      where: { username: registerData.username }
+      where: { username: registerData.username },
     });
 
     if (name) {
@@ -58,15 +62,15 @@ export class AuthService {
     }
 
     registerData.password = await bcrypt.hash(registerData.password, 10);
-    
+
     // Ensure the walletAddress is handled correctly
-    const res = await this.databaseService.user.create({ 
+    const res = await this.databaseService.user.create({
       data: {
         username: registerData.username,
         email: registerData.email,
         password: registerData.password,
         walletAddress: registerData.walletAddress, // Add walletAddress here
-      }
+      },
     });
 
     return {
@@ -74,23 +78,25 @@ export class AuthService {
       user: {
         id: res.id,
         username: res.username,
-        email: res.email
-      }
+        email: res.email,
+      },
     };
   }
 
   async updateEmail(currentUserEmail: string, updateEmailDto: UpdateEmailDto) {
     const { newEmail } = updateEmailDto;
     const existingUser = await this.databaseService.user.findUnique({
-      where: { email: newEmail }
+      where: { email: newEmail },
     });
 
     if (existingUser) {
-      throw new ConflictException('This email is linked to another existing account');
+      throw new ConflictException(
+        'This email is linked to another existing account',
+      );
     }
 
     const user = await this.databaseService.user.findUnique({
-      where: { email: currentUserEmail }
+      where: { email: currentUserEmail },
     });
 
     if (!user) {
@@ -99,16 +105,19 @@ export class AuthService {
 
     await this.databaseService.user.update({
       where: { id: user.id },
-      data: { email: newEmail }
+      data: { email: newEmail },
     });
 
     return { message: 'Email updated successfully' };
   }
 
-  async updateUsername(currentUserEmail: string, updateUsernameDto: UpdateUsernameDto) {
+  async updateUsername(
+    currentUserEmail: string,
+    updateUsernameDto: UpdateUsernameDto,
+  ) {
     const { newUsername } = updateUsernameDto;
     const existingUser = await this.databaseService.user.findUnique({
-      where: { username: newUsername }
+      where: { username: newUsername },
     });
 
     if (existingUser) {
@@ -116,7 +125,7 @@ export class AuthService {
     }
 
     const user = await this.databaseService.user.findUnique({
-      where: { email: currentUserEmail }
+      where: { email: currentUserEmail },
     });
 
     if (!user) {
@@ -125,16 +134,19 @@ export class AuthService {
 
     await this.databaseService.user.update({
       where: { id: user.id },
-      data: { username: newUsername }
+      data: { username: newUsername },
     });
 
     return { message: 'Username updated successfully' };
   }
 
-  async updatePassword(currentUserEmail: string, updatePasswordDto: UpdatePasswordDto) {
+  async updatePassword(
+    currentUserEmail: string,
+    updatePasswordDto: UpdatePasswordDto,
+  ) {
     const { oldPassword, newPassword } = updatePasswordDto;
     const user = await this.databaseService.user.findUnique({
-      where: { email: currentUserEmail }
+      where: { email: currentUserEmail },
     });
 
     if (!user) {
@@ -147,13 +159,15 @@ export class AuthService {
     }
 
     if (oldPassword === newPassword) {
-      throw new ConflictException('The new and old passwords cannot be the same');
+      throw new ConflictException(
+        'The new and old passwords cannot be the same',
+      );
     }
 
     const hashedPassword = await bcrypt.hash(newPassword, 10);
     await this.databaseService.user.update({
       where: { id: user.id },
-      data: { password: hashedPassword }
+      data: { password: hashedPassword },
     });
 
     return { message: 'Password updated successfully' };
@@ -168,7 +182,7 @@ export class AuthService {
         username: true,
         email: true,
         walletAddress: true,
-      }
+      },
     });
 
     if (!user) {

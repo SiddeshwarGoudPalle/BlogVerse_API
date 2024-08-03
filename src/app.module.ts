@@ -8,7 +8,13 @@ import { PaymentsModule } from './payments/payments.module';
 import { WalletModule } from './wallet/wallet.module';
 
 @Module({
-  imports: [DatabaseModule, AuthModule, BlogModule, PaymentsModule, WalletModule], 
+  imports: [
+    DatabaseModule,
+    AuthModule,
+    BlogModule,
+    PaymentsModule,
+    WalletModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })

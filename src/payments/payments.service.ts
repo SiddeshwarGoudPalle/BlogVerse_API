@@ -1,5 +1,9 @@
 // blog.service.ts
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { DatabaseService } from 'src/database/database.service'; // Adjust import path as needed
 import { PayToViewDto } from './dto/pay-to-view.dto';
 import { PaymentResponseDto } from './dto/payment-response.dto';
@@ -41,7 +45,7 @@ export class PaymentsService {
     }
 
     // Check if the user has already paid for this blog
-     if (blog.price > 0) {
+    if (blog.price > 0) {
       const existingPurchase = await this.database.payment.findFirst({
         where: {
           userId: userId,

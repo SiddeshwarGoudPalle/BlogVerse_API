@@ -9,7 +9,7 @@ export class WalletService {
 
   async connectWallet(userEmail: string, connectWalletDto: ConnectWalletDto) {
     const user = await this.databaseService.user.findUnique({
-      where: { email: userEmail }
+      where: { email: userEmail },
     });
 
     if (!user) {
@@ -18,7 +18,7 @@ export class WalletService {
 
     const updatedUser = await this.databaseService.user.update({
       where: { id: user.id },
-      data: { walletAddress: connectWalletDto.walletAddress }
+      data: { walletAddress: connectWalletDto.walletAddress },
     });
 
     return {
@@ -26,8 +26,8 @@ export class WalletService {
       wallet: {
         user_id: updatedUser.id,
         wallet_address: updatedUser.walletAddress,
-        status: 'connected'
-      }
+        status: 'connected',
+      },
     };
   }
 }

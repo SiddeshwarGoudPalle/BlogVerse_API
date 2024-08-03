@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException, ConflictException, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { DatabaseService } from '../database/database.service';
 import { CreateBlogDto } from './dto/create-blog.dto';
 import { Blog } from '@prisma/client';
@@ -17,7 +21,9 @@ export class BlogService {
     }
 
     const isFree = createBlogDto.price === 0;
-    const capitalizedGenre = createBlogDto.genre.charAt(0).toUpperCase() + createBlogDto.genre.slice(1).toLowerCase();
+    const capitalizedGenre =
+      createBlogDto.genre.charAt(0).toUpperCase() +
+      createBlogDto.genre.slice(1).toLowerCase();
 
     const blog = await this.databaseService.blog.create({
       data: {
@@ -123,20 +129,18 @@ export class BlogService {
     const genres = await this.databaseService.blog.findMany({
       select: { genre: true },
     });
-    return [...new Set(genres.map(blog => blog.genre))];
+    return [...new Set(genres.map((blog) => blog.genre))];
   }
-
 
   async getBlogsSortedByPrice(sort: 'asc' | 'desc'): Promise<Blog[]> {
     if (sort !== 'asc' && sort !== 'desc') {
-      throw new BadRequestException('Invalid sort parameter. Valid values are "asc" and "desc".');
+      throw new BadRequestException(
+        'Invalid sort parameter. Valid values are "asc" and "desc".',
+      );
     }
     return this.databaseService.blog.findMany({
       orderBy: { price: sort },
       include: { author: true },
     });
   }
-
 }
-  
-  

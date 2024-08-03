@@ -14,8 +14,14 @@ export class WalletController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @Post('connect')
-  @ApiOperation({ description: 'Connect a wallet to a user account.', summary: 'Connect Wallet.' })
-  async connectWallet(@UserEmail() userEmail: string, @Body() connectWalletDto: ConnectWalletDto) {
+  @ApiOperation({
+    description: 'Connect a wallet to a user account.',
+    summary: 'Connect Wallet.',
+  })
+  async connectWallet(
+    @UserEmail() userEmail: string,
+    @Body() connectWalletDto: ConnectWalletDto,
+  ) {
     return this.walletService.connectWallet(userEmail, connectWalletDto);
   }
 }
