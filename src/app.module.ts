@@ -6,9 +6,6 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { PaymentsModule } from './payments/payments.module';
 import { WalletModule } from './wallet/wallet.module';
-import { APP_INTERCEPTOR } from '@nestjs/core';
-import   
- { CorsInterceptor } from './cors.interceptor';
 
 @Module({
   imports: [
@@ -19,11 +16,6 @@ import
     WalletModule,
   ],
   controllers: [AppController],
-  providers: [AppService,
-    {
-      provide: APP_INTERCEPTOR,
-      useClass: CorsInterceptor,
-    }
-  ],
+  providers: [AppService],
 })
 export class AppModule {}
