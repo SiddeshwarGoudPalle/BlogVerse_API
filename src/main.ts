@@ -2,10 +2,15 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { NextFunction, Request, Response } from 'express';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+    app.use(function (request: Request, response: Response, next: NextFunction) {
+    response.setHeader('Access-Control-Allow-Origin', 'https://blogverse-team-t.vercel.app/');
+    next();
+  });
    app.enableCors({
     origin: '*', // Allow specific origin
     methods: ['GET,HEAD,PUT,PATCH,POST,DELETE, OPTIONS'],
