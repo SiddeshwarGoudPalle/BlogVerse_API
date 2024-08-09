@@ -13,7 +13,7 @@ export class CorsInterceptor implements NestInterceptor {
     const request = context.switchToHttp().getRequest();   
 
 
-    const allowedOrigins = ['https://blogverse-team-t.vercel.app/']// Replace with your config key
+    const allowedOrigins = ['https://blogverse-team-t.vercel.app/','http://localhost:4000']// Replace with your config key
     const origin = request.header('Origin');
 
     if (allowedOrigins && allowedOrigins.includes(origin)) {
