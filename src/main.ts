@@ -7,9 +7,9 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
    app.enableCors({
-    origin: ['https://blogverse-team-t.vercel.app','http://localhost:4000'], // Allow specific origin
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    allowedHeaders: 'Content-Type, Accept, Authorization',
+    origin: ['http://localhost:4000','https://blogverse-team-t.vercel.app/'], // Allow specific origin
+    methods: ['GET,HEAD,PUT,PATCH,POST,DELETE'],
+    allowedHeaders: ['Content-Type, Accept, Authorization'],
     credentials: true, // If you need to allow credentials (cookies, headers)
   });
 
