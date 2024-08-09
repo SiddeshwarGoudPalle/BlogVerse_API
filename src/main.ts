@@ -9,7 +9,7 @@ async function bootstrap() {
    app.enableCors({
     origin: '*', // Allow specific origin
     methods: ['GET,HEAD,PUT,PATCH,POST,DELETE, OPTIONS'],
-    allowedHeaders: ['Content-Type, Accept, Authorization'],
+    allowedHeaders: ['Content-Type', 'Accept', 'Authorization','Access-Control-Allow-Origin'],
     // credentials: true, // If you need to allow credentials (cookies, headers)
   });
 
